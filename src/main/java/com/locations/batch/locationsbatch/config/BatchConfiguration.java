@@ -1,0 +1,64 @@
+package com.locations.batch.locationsbatch.config;
+
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+
+import com.locations.batch.locationsbatch.dto.LocationDTO;
+import com.locations.batch.locationsbatch.listener.JobNotificationListener;
+import com.locations.batch.locationsbatch.model.Location;
+import com.locations.batch.locationsbatch.processor.LocationItemProcessor;
+import com.locations.batch.locationsbatch.writer.LocationItemWriter;
+
+@Configuration
+@EnableBatchProcessing
+public class BatchConfiguration {
+
+	@Autowired
+	private JobBuilderFactory jobBuilderFactory;
+
+	@Autowired
+	private StepBuilderFactory stepBuilderFactory;
+
+	// TODO CORTAR AS ARESTAS
+
+	@Bean
+	public FlatFileItemReader<LocationDTO> reader() {
+		return new FlatFileItemReaderBuilder<LocationDTO>().name("locationItemReader")
+				.resource(new ClassPathResource("csv/restaurante-part-1-.csv")).linesToSkip(1).delimited()
+				.delimiter("|")
+				.names(new String[] { "ID", "NAME", "EVALUATION", "GOOD_EVALUATION", "BAD_EVALUATION", "PHONENUMBER",
+						"STATE", "CITY", "DISTRICT", "STREET", "STREETNUMBER", "LATITUDE", "LONGITUDE", "CATEGORY" })
+				.fieldSetMapper(new BeanWrapperFieldSetMapper<LocationDTO>() {
+					{
+						setTargetType(LocationDTO.class);
+					}
+				}).build();
+	}
+
+	@Bean
+	@Autowired
+	public Job importLocationJob(JobNotificationListener jobListener, Step step) {
+		return jobBuilderFactory.get("importLocationJob").incrementer(new RunIdIncrementer()).listener(jobListener)
+				.flow(step).end().build();
+	}
+
+	@Bean
+	@Autowired
+	public Step step1(FlatFileItemReader<LocationDTO> reader, LocationItemProcessor processor,
+			LocationItemWriter writer) {
+		return stepBuilderFactory.get("step1").<LocationDTO, Location>chunk(10).reader(reader).processor(processor)
+				.writer(writer).build();
+	}
+
+}
