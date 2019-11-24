@@ -4,10 +4,7 @@ import java.util.Objects;
 
 public enum QualityStatus {
 
-	QUALIFIED(7.0, 10.0), IMPROVING(5.0, 6.0), UNQUALIFIED(4.0, 0.0);
-
-	private QualityStatus(double minimunValue, double maximumValue) {
-	}
+	QUALIFIED, IMPROVING, UNQUALIFIED, WITHOUT_EVALUATION;
 
 	/**
 	 * <p>
@@ -25,8 +22,8 @@ public enum QualityStatus {
 	 */
 	public static QualityStatus defineQuality(Double evaluation) {
 
-		if (Objects.isNull(evaluation)) {
-			throw new IllegalArgumentException("Evaluation cannot be null!");
+		if (Objects.isNull(evaluation) || evaluation < 0) {
+			return WITHOUT_EVALUATION;
 		}
 
 		QualityStatus quality = QUALIFIED;

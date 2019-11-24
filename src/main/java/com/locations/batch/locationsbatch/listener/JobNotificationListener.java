@@ -27,8 +27,8 @@ public class JobNotificationListener extends JobExecutionListenerSupport {
 	public void afterJob(JobExecution jobExecution) {
 
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-			logger.info("O Job {} finalizou com sucesso!", jobExecution.getJobConfigurationName());
-			locationRepository.findAll().stream().forEach(System.out::println);
+			logger.info("O Job '{}' finalizou com sucesso!", jobExecution.getJobInstance().getJobName());
+			logger.info("The batch processed {} records", locationRepository.count());
 		}
 
 	}

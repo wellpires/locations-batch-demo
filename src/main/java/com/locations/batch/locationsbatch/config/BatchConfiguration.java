@@ -30,13 +30,11 @@ public class BatchConfiguration {
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
 
-	// TODO CORTAR AS ARESTAS
-
 	@Bean
 	public FlatFileItemReader<LocationDTO> reader() {
+		
 		return new FlatFileItemReaderBuilder<LocationDTO>().name("locationItemReader")
-				.resource(new ClassPathResource("csv/restaurante-part-1-.csv")).linesToSkip(1).delimited()
-				.delimiter("|")
+				.resource(new ClassPathResource("csv/restaurantes.csv")).linesToSkip(1).delimited().delimiter("|")
 				.names(new String[] { "ID", "NAME", "EVALUATION", "GOOD_EVALUATION", "BAD_EVALUATION", "PHONENUMBER",
 						"STATE", "CITY", "DISTRICT", "STREET", "STREETNUMBER", "LATITUDE", "LONGITUDE", "CATEGORY" })
 				.fieldSetMapper(new BeanWrapperFieldSetMapper<LocationDTO>() {
@@ -57,7 +55,7 @@ public class BatchConfiguration {
 	@Autowired
 	public Step step1(FlatFileItemReader<LocationDTO> reader, LocationItemProcessor processor,
 			LocationItemWriter writer) {
-		return stepBuilderFactory.get("step1").<LocationDTO, Location>chunk(10).reader(reader).processor(processor)
+		return stepBuilderFactory.get("step1").<LocationDTO, Location>chunk(10000).reader(reader).processor(processor)
 				.writer(writer).build();
 	}
 
