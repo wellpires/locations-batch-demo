@@ -45,14 +45,12 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	@Autowired
 	public Job importLocationJob(JobNotificationListener jobListener, Step step) {
 		return jobBuilderFactory.get("importLocationJob").incrementer(new RunIdIncrementer()).listener(jobListener)
 				.flow(step).end().build();
 	}
 
 	@Bean
-	@Autowired
 	public Step step1(FlatFileItemReader<LocationDTO> reader, LocationItemProcessor processor,
 			LocationItemWriter writer) {
 		return stepBuilderFactory.get("step1").<LocationDTO, Location>chunk(10000).reader(reader).processor(processor)
