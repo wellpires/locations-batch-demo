@@ -1,5 +1,6 @@
 package com.locations.batch.locationsbatch.builder;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import com.locations.batch.locationsbatch.enums.QualityStatus;
@@ -16,6 +17,8 @@ public class LocationBuilder {
 	private String district;
 	private String street;
 	private QualityStatus status;
+	private BigDecimal latitude;
+	private BigDecimal longitude;
 
 	public LocationBuilder id(String id) {
 		this.id = id;
@@ -63,6 +66,16 @@ public class LocationBuilder {
 		return this;
 	}
 
+	public LocationBuilder latitude(BigDecimal latitude) {
+		this.latitude = latitude;
+		return this;
+	}
+
+	public LocationBuilder longitude(BigDecimal longitude) {
+		this.longitude = longitude;
+		return this;
+	}
+
 	public Location build() {
 		Location location = new Location();
 		location.setId(id);
@@ -74,6 +87,8 @@ public class LocationBuilder {
 		location.setDistrict(district);
 		location.setStreet(street);
 		location.setStatus(status);
+		location.setLatitude(latitude);
+		location.setLongitude(longitude);
 		return location;
 	}
 

@@ -29,7 +29,8 @@ public class LocationItemProcessor implements ItemProcessor<LocationDTO, Locatio
 		String nameUpperCase = locationDTO.getName().toUpperCase();
 		return new LocationBuilder().id(locationDTO.getId()).name(nameUpperCase).evaluation(locationDTO.getEvaluation())
 				.phoneNumber(newPhoneNumber).state(locationDTO.getState()).city(locationDTO.getCity())
-				.district(locationDTO.getDistrict()).street(locationDTO.getStreet()).build();
+				.district(locationDTO.getDistrict()).street(locationDTO.getStreet()).latitude(locationDTO.getLatitude())
+				.longitude(locationDTO.getLongitude()).build();
 	}
 
 }
