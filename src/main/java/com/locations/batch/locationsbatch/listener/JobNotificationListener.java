@@ -20,7 +20,7 @@ public class JobNotificationListener extends JobExecutionListenerSupport {
 
 	@Override
 	public void beforeJob(JobExecution jobExecution) {
-		logger.info("O Job {} foi iniciado ás {}", jobExecution.getJobConfigurationName());
+		logger.info("O Job {} foi iniciado ás {}", jobExecution.getJobInstance().getJobName());
 	}
 
 	@Override

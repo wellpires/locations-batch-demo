@@ -1,6 +1,9 @@
 package com.locations.batch.locationsbatch.builder;
 
+import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.locations.batch.locationsbatch.enums.QualityStatus;
 import com.locations.batch.locationsbatch.model.Location;
@@ -93,6 +96,53 @@ public class LocationBuilder {
 
 	public Optional<Location> buildOptional() {
 		return Optional.ofNullable(build());
+	}
+
+	public Location modify(Location location) {
+		if (StringUtils.isNotBlank(id)) {
+			location.setId(id);
+		}
+
+		if (StringUtils.isNotBlank(name)) {
+			location.setName(name);
+		}
+
+		if (Objects.nonNull(evaluation)) {
+			location.setEvaluation(evaluation);
+		}
+
+		if (Objects.nonNull(phoneNumber)) {
+			location.setPhoneNumber(phoneNumber);
+		}
+
+		if (StringUtils.isNotBlank(state)) {
+			location.setState(state);
+		}
+
+		if (StringUtils.isNotBlank(city)) {
+			location.setCity(city);
+		}
+
+		if (StringUtils.isNotBlank(district)) {
+			location.setDistrict(district);
+		}
+
+		if (StringUtils.isNotBlank(street)) {
+			location.setStreet(street);
+		}
+
+		if (Objects.nonNull(status)) {
+			location.setStatus(status);
+		}
+
+		if (Objects.nonNull(latitude)) {
+			location.setLatitude(latitude);
+		}
+
+		if (Objects.nonNull(longitude)) {
+			location.setLongitude(longitude);
+		}
+		return location;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.locations.batch.locationsbatch.processor;
 
 import java.net.URI;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.locations.batch.locationsbatch.builder.LocationBuilder;
+import com.locations.batch.locationsbatch.dto.AddressComponentDTO;
+import com.locations.batch.locationsbatch.dto.AddressDTO;
+import com.locations.batch.locationsbatch.dto.LocationMapDTO;
+import com.locations.batch.locationsbatch.enums.AddressType;
 import com.locations.batch.locationsbatch.model.Location;
 
 @Component
@@ -34,9 +40,38 @@ public class UncompletedItemProcessor implements ItemProcessor<Location, Locatio
 
 		URI uriBuilt = UriComponentsBuilder.fromHttpUrl(httpUrl).queryParams(queryParameters).build().toUri();
 
-		client.getForEntity(uriBuilt, String.class);
+		LocationMapDTO locationMapDTO = client.getForEntity(uriBuilt, LocationMapDTO.class).getBody();
 
-		return null;
+		AddressDTO addressDTO = locationMapDTO.getResults().stream().filter(locationItem -> {
+			String newCity = findLongName(locationItem, AddressType.ADMINISTRATIVE_AREA_LEVEL_1, AddressType.POLITICAL);
+			String newDistrict = findLongName(locationItem, AddressType.ADMINISTRATIVE_AREA_LEVEL_2,
+					AddressType.POLITICAL);
+			String newStreet = findLongName(locationItem, AddressType.ROUTE);
+
+			return StringUtils.isNoneBlank(newCity, newDistrict, newStreet);
+		}).findFirst().orElseGet(AddressDTO::new);
+
+		String newCity = item.getCity();
+		if (StringUtils.isBlank(newCity)) {
+			newCity = findLongName(addressDTO, AddressType.ADMINISTRATIVE_AREA_LEVEL_1, AddressType.POLITICAL);
+		}
+
+		String newDistrict = item.getDistrict();
+		if (StringUtils.isBlank(newDistrict)) {
+			newDistrict = findLongName(addressDTO, AddressType.ADMINISTRATIVE_AREA_LEVEL_2, AddressType.POLITICAL);
+		}
+
+		String newStreet = item.getStreet();
+		if (StringUtils.isBlank(newStreet)) {
+			newStreet = findLongName(addressDTO, AddressType.ROUTE);
+		}
+
+		return new LocationBuilder().city(newCity).district(newDistrict).street(newStreet).modify(item);
+	}
+
+	private String findLongName(AddressDTO addressDTO, AddressType... addressTypes) {
+		AddressComponentDTO address = addressDTO.findAddressComponentByType(addressTypes);
+		return address.getLongName();
 	}
 
 }
