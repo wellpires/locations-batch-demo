@@ -1,5 +1,7 @@
 package com.locations.batch.locationsbatch.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,7 +21,8 @@ public class Location {
 	private String city;
 	private String district;
 	private String street;
-
+	private BigDecimal latitude;
+	private BigDecimal longitude;
 	@Enumerated(EnumType.STRING)
 	private QualityStatus status;
 
@@ -87,12 +90,28 @@ public class Location {
 		this.street = street;
 	}
 
-	public void setStatus(QualityStatus status) {
-		this.status = status;
+	public BigDecimal getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(BigDecimal latitude) {
+		this.latitude = latitude;
+	}
+
+	public BigDecimal getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(BigDecimal longitude) {
+		this.longitude = longitude;
 	}
 
 	public QualityStatus getStatus() {
 		return status;
+	}
+
+	public void setStatus(QualityStatus status) {
+		this.status = status;
 	}
 
 	@Override
@@ -100,7 +119,8 @@ public class Location {
 		return new StringBuilder().append("Location [id=").append(id).append(", name=").append(name)
 				.append(", evaluation=").append(evaluation).append(", phoneNumber=").append(phoneNumber)
 				.append(", state=").append(state).append(", city=").append(city).append(", district=").append(district)
-				.append(", street=").append(street).append(", status=").append(status).append("]").toString();
+				.append(", street=").append(street).append(", latitude=").append(latitude).append(", longitude=")
+				.append(longitude).append(", status=").append(status).append("]").toString();
 	}
 
 }
