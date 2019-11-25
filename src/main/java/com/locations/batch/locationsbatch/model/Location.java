@@ -1,7 +1,5 @@
 package com.locations.batch.locationsbatch.model;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,8 +19,9 @@ public class Location {
 	private String city;
 	private String district;
 	private String street;
-	private BigDecimal latitude;
-	private BigDecimal longitude;
+	private Double latitude;
+	private Double longitude;
+
 	@Enumerated(EnumType.STRING)
 	private QualityStatus status;
 
@@ -90,19 +89,19 @@ public class Location {
 		this.street = street;
 	}
 
-	public BigDecimal getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(BigDecimal latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 
-	public BigDecimal getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(BigDecimal longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 
