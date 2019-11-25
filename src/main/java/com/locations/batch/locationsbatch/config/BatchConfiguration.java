@@ -15,20 +15,20 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.web.client.RestTemplate;
 
 import com.locations.batch.locationsbatch.dto.LocationDTO;
 import com.locations.batch.locationsbatch.listener.JobNotificationListener;
 import com.locations.batch.locationsbatch.model.Location;
 import com.locations.batch.locationsbatch.processor.LocationItemProcessor;
-import com.locations.batch.locationsbatch.processor.TesteItemProcessor;
 import com.locations.batch.locationsbatch.processor.UncompletedItemProcessor;
 import com.locations.batch.locationsbatch.repository.LocationRepository;
 import com.locations.batch.locationsbatch.writer.LocationItemWriter;
-import com.locations.batch.locationsbatch.writer.TesteItemWriter;
 
 @Configuration
 @EnableBatchProcessing
@@ -42,6 +42,11 @@ public class BatchConfiguration {
 
 	@Autowired
 	private LocationRepository locationRepository;
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplateBuilder().build();
+	}
 
 	@Bean
 	public FlatFileItemReader<LocationDTO> reader() {
@@ -63,7 +68,8 @@ public class BatchConfiguration {
 		sort.put("id", Direction.ASC);
 
 		return new RepositoryItemReaderBuilder<Location>().name("uncompletedLocationsItemReader")
-				.repository(locationRepository).methodName("findUncompletedLocation").sorts(sort).build();
+				.repository(locationRepository).methodName("findByCityIsNullOrDistrictIsNullOrStreetIsNull").sorts(sort)
+				.build();
 	}
 
 	@Bean
