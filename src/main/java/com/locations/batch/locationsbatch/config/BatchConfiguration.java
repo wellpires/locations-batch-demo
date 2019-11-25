@@ -25,6 +25,7 @@ import com.locations.batch.locationsbatch.listener.JobNotificationListener;
 import com.locations.batch.locationsbatch.model.Location;
 import com.locations.batch.locationsbatch.processor.LocationItemProcessor;
 import com.locations.batch.locationsbatch.processor.TesteItemProcessor;
+import com.locations.batch.locationsbatch.processor.UncompletedItemProcessor;
 import com.locations.batch.locationsbatch.repository.LocationRepository;
 import com.locations.batch.locationsbatch.writer.LocationItemWriter;
 import com.locations.batch.locationsbatch.writer.TesteItemWriter;
@@ -79,7 +80,8 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Step step2(RepositoryItemReader<Location> reader, TesteItemProcessor processor, TesteItemWriter writer) {
+	public Step step2(RepositoryItemReader<Location> reader, UncompletedItemProcessor processor,
+			LocationItemWriter writer) {
 		return stepBuilderFactory.get("step2").<Location, Location>chunk(100).reader(reader).processor(processor)
 				.writer(writer).build();
 	}
