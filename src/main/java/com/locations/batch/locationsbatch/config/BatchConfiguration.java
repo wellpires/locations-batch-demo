@@ -52,7 +52,8 @@ public class BatchConfiguration {
 	public FlatFileItemReader<LocationDTO> reader() {
 
 		return new FlatFileItemReaderBuilder<LocationDTO>().name("locationItemReader")
-				.resource(new ClassPathResource("csv/restaurantes.csv")).linesToSkip(1).delimited().delimiter("|")
+				.resource(new ClassPathResource("csv/restaurantes.csv")).linesToSkip(1).maxItemCount(100000).delimited()
+				.delimiter("|")
 				.names(new String[] { "ID", "NAME", "EVALUATION", "GOOD_EVALUATION", "BAD_EVALUATION", "PHONENUMBER",
 						"STATE", "CITY", "DISTRICT", "STREET", "STREETNUMBER", "LATITUDE", "LONGITUDE", "CATEGORY" })
 				.fieldSetMapper(new BeanWrapperFieldSetMapper<LocationDTO>() {

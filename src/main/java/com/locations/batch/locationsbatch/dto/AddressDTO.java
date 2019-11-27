@@ -29,7 +29,7 @@ public class AddressDTO {
 		}
 
 		return addressComponentsDTO.stream().filter(item -> item.hasTypes(addressTypes)).findFirst()
-				.orElseGet(AddressComponentDTO::new);
+				.orElseGet(() -> null);
 	}
 
 }
